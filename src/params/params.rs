@@ -6,6 +6,7 @@ const ID: &str = "id";
 const PASSWORD: &str = "password";
 const CLIENT: &str = "client";
 const SECRET: &str = "secret";
+const SCOPE: &str = "scope";
 const RESOURCE_SERVER: &str = "resource_server";
 const OAUTH_SERVER: &str = "oauth_server";
 
@@ -16,6 +17,7 @@ pub struct Params {
     pub pass: String,
     pub client: String,
     pub secret: String,
+    pub scope: String,
     pub resource_server: String,
     pub oauth_server: String,
 }
@@ -34,6 +36,7 @@ impl Params {
         let password = matches.value_of(PASSWORD);
         let client = matches.value_of(CLIENT);
         let secret = matches.value_of(SECRET);
+        let scope = matches.value_of(SCOPE);
         let resource_server = matches.value_of(RESOURCE_SERVER);
         let oauth_server = matches.value_of(OAUTH_SERVER);
 
@@ -42,6 +45,7 @@ impl Params {
             pass: Self::get_password(password, env.pass)?,
             client: Self::get_client(client, env.client)?,
             secret: Self::get_secret(secret, env.secret)?,
+            scope: Self::get_scope(scope, env.scope)?,
             resource_server: Self::get_resource_server(resource_server, env.resource_server),
             oauth_server: Self::get_oauth_server(oauth_server, env.oauth_server),
         })
@@ -83,6 +87,16 @@ impl Params {
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("OAuthシークレットを指定してください。"),
+            },
+        }
+    }
+
+    fn get_scope(arg: Option<&str>, env: Option<String>) -> Result<String> {
+        match arg {
+            Some(arg) => Ok(arg.to_string()),
+            None => match env {
+                Some(env) => Ok(env),
+                None => panic!("スコープを指定してください。"),
             },
         }
     }
@@ -144,17 +158,24 @@ impl Params {
                     .takes_value(true),
             )
             .arg(
+                Arg::with_name(SCOPE)
+                    .help("oauth scope")
+                    .short("u")
+                    .long("scope")
+                    .takes_value(true),
+            )
+            .arg(
                 Arg::with_name(RESOURCE_SERVER)
                     .help("resource server url")
-                    .short("rs")
-                    .long("resource_server url")
+                    .short("r")
+                    .long("resource_server")
                     .takes_value(true),
             )
             .arg(
                 Arg::with_name(OAUTH_SERVER)
                     .help("oauth server url")
-                    .short("os")
-                    .long("oauth_server url")
+                    .short("a")
+                    .long("oauth_server")
                     .takes_value(true),
             )
     }

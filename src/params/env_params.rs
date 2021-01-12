@@ -12,6 +12,8 @@ pub struct EnvParams {
     pub client: Option<String>,
     #[envconfig(from = "CW_OAUTH_SECRET")]
     pub secret: Option<String>,
+    #[envconfig(from = "CW_OAUTH_SCOPE")]
+    pub scope: Option<String>,
     #[envconfig(from = "CW_RESOURCE_SERVER")]
     pub resource_server: Option<String>,
     #[envconfig(from = "CW_OAUTH_SERVER")]

@@ -1,12 +1,14 @@
 Chatworkの公式ドキュメント（https://developer.chatwork.com/ja/oauth.html）に則って認可トークンを取得する手続きを自動化します
 # 実行方法
 - 以下のように実行時にパラメーターとして渡すことができます
-  - chatwork_auth -i 'アカウントID' -p 'パスワード' -c 'OAuthクライアントID' -s 'OAuthクライアントシークレット' -rs 'コンセント画面URL' -os 'トークンエンドポイントURL'
+  - chatwork_oauth -i 'アカウントID' -p 'パスワード' -c 'OAuthクライアントID' -s 'OAuthクライアントシークレット' -u 'スコープ' -r 'コンセント画面URL' -a 'トークンエンドポイントURL'
+  - chatwork_oauth --id 'アカウントID' --password 'パスワード' --client 'OAuthクライアントID' --secret 'OAuthクライアントシークレット' --scope 'スコープ' --resource_server 'コンセント画面URL' --oauth_server 'トークンエンドポイントURL'
 - 環境変数を設定することで、実行時のパラメーター指定を省略することができます
   - CW_OAUTH_ID: アカウントID
   - CW_OAUTH_PASS: パスワード
   - CW_OAUTH_CLIENT: OAuthクライアントID
   - CW_OAUTH_SECRET: OAuthクライアントシークレット
+  - CW_OAUTH_SCOPE: スコープ
   - CW_RESOURCE_SERVER: コンセント画面を起動するリソースサーバーのURL
     - 未指定時は`https://www.chatwork.com/packages/oauth2/login.php`にアクセスする
   - CW_OAUTH_SERVER: 認可トークンの払い出しを行うOAuthサーバーのURL

@@ -23,7 +23,8 @@ impl AuthCode {
             "&redirect_uri=https://example.com/callback.php", // TODO リダイレクトURLは実行時に渡す
             "&client_id=",
             &params.client,
-            "&scope=rooms.info:read", // TODO スコープは実行時に渡す
+            "&scope=",
+            &params.scope,
         ]
         .concat();
 
