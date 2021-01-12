@@ -14,7 +14,6 @@ Chatworkの公式ドキュメント （https://developer.chatwork.com/ja/oauth.h
   - `CW_OAUTH_SERVER`: 認可トークンの払い出しを行うOAuthサーバーのURL
     - 未指定時は`https://oauth.chatwork.com/token`にアクセスする
 # 残
-- スコープをパラメーターで指定できるようにする
 - リダイレクトURLをパラメーターで指定できるようにする
 - 取得したトークンはクリップボードに貼り付けてコマンドを終了する
 - Docker化
