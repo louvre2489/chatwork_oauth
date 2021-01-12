@@ -14,6 +14,8 @@ pub struct EnvParams {
     pub secret: Option<String>,
     #[envconfig(from = "CW_OAUTH_SCOPE")]
     pub scope: Option<String>,
+    #[envconfig(from = "CW_REDIRECT_URL")]
+    pub redirect_url: Option<String>,
     #[envconfig(from = "CW_RESOURCE_SERVER")]
     pub resource_server: Option<String>,
     #[envconfig(from = "CW_OAUTH_SERVER")]

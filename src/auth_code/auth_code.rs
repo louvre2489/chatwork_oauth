@@ -20,7 +20,8 @@ impl AuthCode {
         let url = [
             &params.resource_server,
             "?response_type=code",
-            "&redirect_uri=https://example.com/callback.php", // TODO リダイレクトURLは実行時に渡す
+            "&redirect_uri=",
+            &params.redirect_url,
             "&client_id=",
             &params.client,
             "&scope=",
@@ -54,7 +55,7 @@ impl AuthCode {
         let code = w[0];
 
         Ok(Self {
-            code: code.to_string(),
+            code: String::from(code),
         })
     }
 }

@@ -7,6 +7,7 @@ const PASSWORD: &str = "password";
 const CLIENT: &str = "client";
 const SECRET: &str = "secret";
 const SCOPE: &str = "scope";
+const REDIRECT_URL: &str = "redirect_url";
 const RESOURCE_SERVER: &str = "resource_server";
 const OAUTH_SERVER: &str = "oauth_server";
 
@@ -18,6 +19,7 @@ pub struct Params {
     pub client: String,
     pub secret: String,
     pub scope: String,
+    pub redirect_url: String,
     pub resource_server: String,
     pub oauth_server: String,
 }
@@ -37,6 +39,7 @@ impl Params {
         let client = matches.value_of(CLIENT);
         let secret = matches.value_of(SECRET);
         let scope = matches.value_of(SCOPE);
+        let redirect_url = matches.value_of(REDIRECT_URL);
         let resource_server = matches.value_of(RESOURCE_SERVER);
         let oauth_server = matches.value_of(OAUTH_SERVER);
 
@@ -46,6 +49,7 @@ impl Params {
             client: Self::get_client(client, env.client)?,
             secret: Self::get_secret(secret, env.secret)?,
             scope: Self::get_scope(scope, env.scope)?,
+            redirect_url: Self::get_redirect_url(redirect_url, env.redirect_url),
             resource_server: Self::get_resource_server(resource_server, env.resource_server),
             oauth_server: Self::get_oauth_server(oauth_server, env.oauth_server),
         })
@@ -53,7 +57,7 @@ impl Params {
 
     fn get_id(arg: Option<&str>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(arg.to_string()),
+            Some(arg) => Ok(String::from(arg)),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("IDを指定してください。"),
@@ -63,7 +67,7 @@ impl Params {
 
     fn get_password(arg: Option<&str>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(arg.to_string()),
+            Some(arg) => Ok(String::from(arg)),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("パスワードを指定してください。"),
@@ -73,7 +77,7 @@ impl Params {
 
     fn get_client(arg: Option<&str>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(arg.to_string()),
+            Some(arg) => Ok(String::from(arg)),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("OAuthクライアントを指定してください。"),
@@ -83,7 +87,7 @@ impl Params {
 
     fn get_secret(arg: Option<&str>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(arg.to_string()),
+            Some(arg) => Ok(String::from(arg)),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("OAuthシークレットを指定してください。"),
@@ -93,7 +97,7 @@ impl Params {
 
     fn get_scope(arg: Option<&str>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(arg.to_string()),
+            Some(arg) => Ok(String::from(arg)),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("スコープを指定してください。"),
@@ -101,13 +105,24 @@ impl Params {
         }
     }
 
+    /// 指定が無い場合は、`https://example.com/callback.php`
+    fn get_redirect_url(arg: Option<&str>, env: Option<String>) -> String {
+        match arg {
+            Some(arg) => String::from(arg),
+            None => match env {
+                Some(env) => env,
+                None => String::from("https://example.com/callback.php"),
+            },
+        }
+    }
+
     /// 指定が無い場合は、`https://www.chatwork.com/packages/oauth2/login.php`
     fn get_resource_server(arg: Option<&str>, env: Option<String>) -> String {
         match arg {
-            Some(arg) => arg.to_string(),
+            Some(arg) => String::from(arg),
             None => match env {
                 Some(env) => env,
-                None => "https://www.chatwork.com/packages/oauth2/login.php".to_string(),
+                None => String::from("https://www.chatwork.com/packages/oauth2/login.php"),
             },
         }
     }
@@ -115,10 +130,10 @@ impl Params {
     /// 指定が無い場合は、`https://oauth.chatwork.com/token`
     fn get_oauth_server(arg: Option<&str>, env: Option<String>) -> String {
         match arg {
-            Some(arg) => arg.to_string(),
+            Some(arg) => String::from(arg),
             None => match env {
                 Some(env) => env,
-                None => "https://oauth.chatwork.com/token".to_string(),
+                None => String::from("https://oauth.chatwork.com/token"),
             },
         }
     }
@@ -162,6 +177,13 @@ impl Params {
                     .help("oauth scope")
                     .short("u")
                     .long("scope")
+                    .takes_value(true),
+            )
+            .arg(
+                Arg::with_name(REDIRECT_URL)
+                    .help("redirect url")
+                    .short("d")
+                    .long("redirect")
                     .takes_value(true),
             )
             .arg(

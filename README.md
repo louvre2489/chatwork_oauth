@@ -9,12 +9,13 @@ Chatworkの公式ドキュメント （https://developer.chatwork.com/ja/oauth.h
   - `CW_OAUTH_CLIENT`: OAuthクライアントID
   - `CW_OAUTH_SECRET`: OAuthクライアントシークレット
   - `CW_OAUTH_SCOPE`: スコープ
+  - `CW_REDIRECT_URL`: リダイレクトURL
+    - 未指定時は`https://example.com/callback.php`を指定する
   - `CW_RESOURCE_SERVER`: コンセント画面を起動するリソースサーバーのURL
     - 未指定時は`https://www.chatwork.com/packages/oauth2/login.php`にアクセスする
   - `CW_OAUTH_SERVER`: 認可トークンの払い出しを行うOAuthサーバーのURL
     - 未指定時は`https://oauth.chatwork.com/token`にアクセスする
 # 残
-- リダイレクトURLをパラメーターで指定できるようにする
 - 取得したトークンはクリップボードに貼り付けてコマンドを終了する
 - Docker化
 - リフレッシュトークンによるトークン取得

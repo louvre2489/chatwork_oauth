@@ -45,7 +45,7 @@ impl AuthToken {
         let req_body = [
             ("grant_type", "authorization_code"),
             ("code", &code),
-            ("redirect_uri", "https://example.com/callback.php"), // TODO リダイレクトURLは実行時に渡す
+            ("redirect_uri", &params.redirect_url),
         ];
 
         let client = reqwest::Client::new();
