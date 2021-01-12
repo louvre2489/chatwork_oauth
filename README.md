@@ -2,7 +2,7 @@ Chatworkの公式ドキュメント （https://developer.chatwork.com/ja/oauth.h
 # 実行方法
 - 以下のように実行時にパラメーターとして渡すことができます
   - `chatwork_oauth -i 'アカウントID' -p 'パスワード' -c 'OAuthクライアントID' -s 'OAuthクライアントシークレット' -u 'スコープ' -r 'コンセント画面URL' -a 'トークンエンドポイントURL'`
-  - `chatwork_oauth --id 'アカウントID' --password 'パスワード' --client 'OAuthクライアントID' --secret 'OAuthクライアントシークレット' --scope 'スコープ' --resource_server 'コンセント画面URL' --oauth_server 'トークンエンドポイントURL'
+  - `chatwork_oauth --id 'アカウントID' --password 'パスワード' --client 'OAuthクライアントID' --secret 'OAuthクライアントシークレット' --scope 'スコープ' --resource_server 'コンセント画面URL' --oauth_server 'トークンエンドポイントURL'`
 - 環境変数を設定することで、実行時のパラメーター指定を省略することができます
   - `CW_OAUTH_ID`: アカウントID
   - `CW_OAUTH_PASS`: パスワード
