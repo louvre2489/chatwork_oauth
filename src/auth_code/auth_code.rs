@@ -18,9 +18,9 @@ impl AuthCode {
 
         // ref: https://developer.chatwork.com/ja/oauth.html の 例.コンセント画面を表示するためのURL
         let url = [
-            "https://www.chatwork.com/packages/oauth2/login.php", // TODO 実行時に渡す
+            &params.resource_server,
             "?response_type=code",
-            "&redirect_uri=https://example.com/callback.php",
+            "&redirect_uri=https://example.com/callback.php", // TODO リダイレクトURLは実行時に渡す
             "&client_id=",
             &params.client,
             "&scope=rooms.info:read", // TODO スコープは実行時に渡す

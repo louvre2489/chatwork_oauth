@@ -23,7 +23,7 @@ fn main() {
         }
     };
 
-    let access_token = match AuthToken::get_oauth_token(params, auth_code) {
+    let access_token = match AuthToken::get_oauth_token(&params, &auth_code) {
         Ok(r) => r,
         Err(e) => {
             println!("Error has occurred:{}", e);

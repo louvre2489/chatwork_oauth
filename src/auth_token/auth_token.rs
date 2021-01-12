@@ -8,13 +8,13 @@ use tokio;
 pub struct AuthToken {}
 
 impl AuthToken {
-    pub fn get_oauth_token(params: Params, auth_code: AuthCode) -> Result<String> {
+    pub fn get_oauth_token(params: &Params, auth_code: &AuthCode) -> Result<String> {
         // OAuthクライアントの情報をBase64エンコーディング
         let base64_value = Self::get_base64_value(&params.client, &params.secret);
 
         // アクセストークンを取得する
         let req = async {
-            let res = Self::access_token_endpoint(auth_code, &base64_value);
+            let res = Self::access_token_endpoint(&params, &auth_code, &base64_value);
             res.await
         };
 
@@ -36,19 +36,23 @@ impl AuthToken {
     }
 
     /// tokenエンドポイントにリクエストを送る
-    async fn access_token_endpoint(auth_code: AuthCode, base64_value: &str) -> Result<String> {
-        let code = auth_code.code;
-        let params = [
+    async fn access_token_endpoint(
+        params: &Params,
+        auth_code: &AuthCode,
+        base64_value: &str,
+    ) -> Result<String> {
+        let code = &auth_code.code;
+        let req_body = [
             ("grant_type", "authorization_code"),
             ("code", &code),
-            ("redirect_uri", "https://example.com/callback.php"),
+            ("redirect_uri", "https://example.com/callback.php"), // TODO リダイレクトURLは実行時に渡す
         ];
 
         let client = reqwest::Client::new();
         let res: Value = client
-            .post("https://oauth.chatwork.com/token")
+            .post(&params.oauth_server)
             .headers(Self::construct_headers(&base64_value))
-            .form(&params)
+            .form(&req_body)
             .send()
             .await
             .unwrap()
