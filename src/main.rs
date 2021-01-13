@@ -16,7 +16,7 @@ fn main(
     #[opt(short = "r", long = "resource_server")] resource_server: Option<String>,
     #[opt(short = "a", long = "oauth_server")] oauth_server: Option<String>,
 ) {
-    let params = match Params::get_params(
+    let params = match Params::create_params(
         id,
         password,
         client,

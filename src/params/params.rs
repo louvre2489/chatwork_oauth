@@ -18,7 +18,7 @@ impl Params {
     /// コマンドライン引数でID/PASS/CLIENT/SECRETが指定されている場合は引数を採用する
     /// コマンドライン引数の指定がない場合は環境変数を採用する
     /// どちらも指定がなければエラーとする
-    pub fn get_params(
+    pub fn create_params(
         id: Option<String>,
         password: Option<String>,
         client: Option<String>,
@@ -29,7 +29,6 @@ impl Params {
         oauth_server: Option<String>,
     ) -> Result<Params> {
         let env = EnvParams::get_env().unwrap();
-        println!("{:?}", env);
 
         Ok(Params {
             id: Self::get_id(id, env.id)?,

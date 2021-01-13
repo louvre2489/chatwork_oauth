@@ -26,10 +26,6 @@ impl AuthToken {
         Ok(access_token)
     }
 
-    fn create_auth_header_value(base64_value: &str) -> String {
-        format!("{}{}", "Basic ", base64_value)
-    }
-
     /// tokenエンドポイントへのリクエスト時にAuthorizationヘッダに指定するBase64値を生成する
     fn get_base64_value(client: &str, secret: &str) -> String {
         base64::encode([client, ":", secret].join(""))
@@ -79,5 +75,9 @@ impl AuthToken {
         );
 
         headers
+    }
+
+    fn create_auth_header_value(base64_value: &str) -> String {
+        format!("{}{}", "Basic ", base64_value)
     }
 }
