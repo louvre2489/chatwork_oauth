@@ -1,15 +1,5 @@
 use crate::params::EnvParams;
 use anyhow::Result;
-use clap::{App, Arg};
-
-const ID: &str = "id";
-const PASSWORD: &str = "password";
-const CLIENT: &str = "client";
-const SECRET: &str = "secret";
-const SCOPE: &str = "scope";
-const REDIRECT_URL: &str = "redirect_url";
-const RESOURCE_SERVER: &str = "resource_server";
-const OAUTH_SERVER: &str = "oauth_server";
 
 /// 認可取得に使用するパラメーターを格納するための構造体
 #[derive(Debug)]
@@ -28,20 +18,18 @@ impl Params {
     /// コマンドライン引数でID/PASS/CLIENT/SECRETが指定されている場合は引数を採用する
     /// コマンドライン引数の指定がない場合は環境変数を採用する
     /// どちらも指定がなければエラーとする
-    pub fn get_params() -> Result<Params> {
+    pub fn get_params(
+        id: Option<String>,
+        password: Option<String>,
+        client: Option<String>,
+        secret: Option<String>,
+        scope: Option<String>,
+        redirect_url: Option<String>,
+        resource_server: Option<String>,
+        oauth_server: Option<String>,
+    ) -> Result<Params> {
         let env = EnvParams::get_env().unwrap();
         println!("{:?}", env);
-
-        let matches = Self::get_param_def().get_matches();
-
-        let id = matches.value_of(ID);
-        let password = matches.value_of(PASSWORD);
-        let client = matches.value_of(CLIENT);
-        let secret = matches.value_of(SECRET);
-        let scope = matches.value_of(SCOPE);
-        let redirect_url = matches.value_of(REDIRECT_URL);
-        let resource_server = matches.value_of(RESOURCE_SERVER);
-        let oauth_server = matches.value_of(OAUTH_SERVER);
 
         Ok(Params {
             id: Self::get_id(id, env.id)?,
@@ -55,9 +43,9 @@ impl Params {
         })
     }
 
-    fn get_id(arg: Option<&str>, env: Option<String>) -> Result<String> {
+    fn get_id(arg: Option<String>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(String::from(arg)),
+            Some(arg) => Ok(arg),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("IDを指定してください。"),
@@ -65,9 +53,9 @@ impl Params {
         }
     }
 
-    fn get_password(arg: Option<&str>, env: Option<String>) -> Result<String> {
+    fn get_password(arg: Option<String>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(String::from(arg)),
+            Some(arg) => Ok(arg),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("パスワードを指定してください。"),
@@ -75,9 +63,9 @@ impl Params {
         }
     }
 
-    fn get_client(arg: Option<&str>, env: Option<String>) -> Result<String> {
+    fn get_client(arg: Option<String>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(String::from(arg)),
+            Some(arg) => Ok(arg),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("OAuthクライアントを指定してください。"),
@@ -85,9 +73,9 @@ impl Params {
         }
     }
 
-    fn get_secret(arg: Option<&str>, env: Option<String>) -> Result<String> {
+    fn get_secret(arg: Option<String>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(String::from(arg)),
+            Some(arg) => Ok(arg),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("OAuthシークレットを指定してください。"),
@@ -95,9 +83,9 @@ impl Params {
         }
     }
 
-    fn get_scope(arg: Option<&str>, env: Option<String>) -> Result<String> {
+    fn get_scope(arg: Option<String>, env: Option<String>) -> Result<String> {
         match arg {
-            Some(arg) => Ok(String::from(arg)),
+            Some(arg) => Ok(arg),
             None => match env {
                 Some(env) => Ok(env),
                 None => panic!("スコープを指定してください。"),
@@ -106,9 +94,9 @@ impl Params {
     }
 
     /// 指定が無い場合は、`https://example.com/callback.php`
-    fn get_redirect_url(arg: Option<&str>, env: Option<String>) -> String {
+    fn get_redirect_url(arg: Option<String>, env: Option<String>) -> String {
         match arg {
-            Some(arg) => String::from(arg),
+            Some(arg) => arg,
             None => match env {
                 Some(env) => env,
                 None => String::from("https://example.com/callback.php"),
@@ -117,9 +105,9 @@ impl Params {
     }
 
     /// 指定が無い場合は、`https://www.chatwork.com/packages/oauth2/login.php`
-    fn get_resource_server(arg: Option<&str>, env: Option<String>) -> String {
+    fn get_resource_server(arg: Option<String>, env: Option<String>) -> String {
         match arg {
-            Some(arg) => String::from(arg),
+            Some(arg) => arg,
             None => match env {
                 Some(env) => env,
                 None => String::from("https://www.chatwork.com/packages/oauth2/login.php"),
@@ -128,77 +116,13 @@ impl Params {
     }
 
     /// 指定が無い場合は、`https://oauth.chatwork.com/token`
-    fn get_oauth_server(arg: Option<&str>, env: Option<String>) -> String {
+    fn get_oauth_server(arg: Option<String>, env: Option<String>) -> String {
         match arg {
-            Some(arg) => String::from(arg),
+            Some(arg) => arg,
             None => match env {
                 Some(env) => env,
                 None => String::from("https://oauth.chatwork.com/token"),
             },
         }
-    }
-
-    /// コマンドライン引数の定義
-    fn get_param_def() -> App<'static, 'static> {
-        App::new("chatwork_oauth")
-            .version("0.1.0")
-            .author("louvre2489 <louvre2489@gmail.com>")
-            .about("get token of chatwork oauth")
-            .arg(
-                Arg::with_name(ID)
-                    .help("login user id")
-                    .short("i")
-                    .long("id")
-                    .takes_value(true),
-            )
-            .arg(
-                Arg::with_name(PASSWORD)
-                    .help("login password")
-                    .short("p")
-                    .long("password")
-                    .takes_value(true),
-            )
-            .arg(
-                Arg::with_name(CLIENT)
-                    .help("oauth cliend id")
-                    .short("c")
-                    .long("client")
-                    .takes_value(true),
-            )
-            .arg(
-                Arg::with_name(SECRET)
-                    .help("oauth client secret")
-                    .short("s")
-                    .long("secret")
-                    .takes_value(true),
-            )
-            .arg(
-                Arg::with_name(SCOPE)
-                    .help("oauth scope")
-                    .short("u")
-                    .long("scope")
-                    .takes_value(true),
-            )
-            .arg(
-                Arg::with_name(REDIRECT_URL)
-                    .help("redirect url")
-                    .short("d")
-                    .long("redirect")
-                    .takes_value(true),
-            )
-            .arg(
-                Arg::with_name(RESOURCE_SERVER)
-                    .help("resource server url")
-                    .short("r")
-                    .long("resource_server")
-                    .takes_value(true),
-            )
-            .arg(
-                Arg::with_name(OAUTH_SERVER)
-                    .help("oauth server url")
-                    .short("a")
-                    .long("oauth_server")
-                    .takes_value(true),
-            )
     }
 }
