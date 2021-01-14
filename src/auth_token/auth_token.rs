@@ -36,7 +36,6 @@ impl AuthToken {
         auth_code: &AuthCode,
         base64_value: &str,
     ) -> Result<String> {
-        println!("今からトークン取得していきます");
         let code = &auth_code.code;
         let req_body = [
             ("grant_type", "authorization_code"),
@@ -44,8 +43,9 @@ impl AuthToken {
             ("redirect_uri", &params.redirect_url),
         ];
 
+        println!("reqwestの初期化開始");
         let client = reqwest::Client::new();
-        println!("今からHTTP通信します");
+        println!("reqwestの初期化完了");
         let res: Value = client
             .post(&params.oauth_server)
             .headers(Self::construct_headers(&base64_value))
@@ -56,10 +56,8 @@ impl AuthToken {
             .json()
             .await
             .unwrap();
-        println!("HTTP通信終わりました");
 
         let access_token = &res["access_token"].as_str().unwrap();
-        println!("トークン取得できました");
 
         Ok(access_token.to_string())
     }
