@@ -1,3 +1,4 @@
+use anyhow::Result;
 use argopt::cmd;
 use chatwork_oauth::auth_code::auth_code::AuthCode;
 use chatwork_oauth::auth_token::auth_token::AuthToken;
@@ -15,7 +16,7 @@ fn main(
     #[opt(short = "d", long = "redirect_url")] redirect_url: Option<String>,
     #[opt(short = "r", long = "resource_server")] resource_server: Option<String>,
     #[opt(short = "a", long = "oauth_server")] oauth_server: Option<String>,
-) {
+) -> Result<()> {
     let params = match Params::create_params(
         id,
         password,
@@ -41,14 +42,7 @@ fn main(
         }
     };
 
-    let access_token = match AuthToken::get_oauth_token(&params, &auth_code) {
-        Ok(r) => r,
-        Err(e) => {
-            println!("Error has occurred:{}", e);
-            process::exit(1);
-        }
-    };
-    println!("認可コード取得完了");
+    let access_token = AuthToken::get_oauth_token(&params, &auth_code)?;
 
     println!("{}", "アクセストークンの取得に成功しました");
     println!("{}", "------------------------------------");
@@ -57,4 +51,6 @@ fn main(
     // TODO クリップボードに貼り付ける
 
     // TODO リフレッシュトークンの取得
+
+    Ok(())
 }

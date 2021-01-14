@@ -1,33 +1,34 @@
-FROM rust:1.48.0-alpine
+FROM ekidd/rust-musl-builder:stable AS builder
 
 # Chrome
-RUN apk add --update \
-        udev \
-        ttf-freefont \
-        chromium \
-        pkgconfig \
-        libressl-dev \
-        alpine-sdk
+#RUN sudo apt update && \
+#    sudo apt install wget -y && \
+#    sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+#    sudo wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+#    sudo apt update && \
+#    sudo apt install google-chrome-stable -y
+#RUN apk add --update \
+#        udev \
+#        ttf-freefont \
+#        chromium \
+#        pkgconfig \
+#        libressl-dev \
+#        alpine-sdk
 
-WORKDIR /chatwork_oauth
+ADD --chown=rust:rust . ./
 
-COPY Cargo.toml Cargo.toml
-
-# いったん空でビルドするための準備
-RUN mkdir src
-RUN echo "fn main(){}" > src/main.rs
-
-# 依存クレートをビルド
 RUN cargo build --release
 
-# ソースをコピーして再度ビルド
-COPY ./src ./src
+FROM alpine:latest
+RUN apk --no-cache add udev \
+                       ttf-freefont \
+                       chromium
 
-# 初回ビルド時に生成されたファイルを削除
-RUN rm -f target/release/deps/chatwork_oauth*
+COPY --from=builder \
+    /home/rust/src/target/x86_64-unknown-linux-musl/release/chatwork_oauth \
+    /usr/local/bin/
+# CMD /usr/local/bin/chatwork_oauth
+ENTRYPOINT /usr/local/bin/chatwork_oauth
 
-# 再度ビルドする
-RUN cargo build --release
-
-RUN cargo install --path .
-ENTRYPOINT ["chatwork_oauth"]
+# RUN cargo install --path .
+#ENTRYPOINT ["chatwork_oauth"]

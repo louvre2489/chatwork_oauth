@@ -15,12 +15,8 @@ impl AuthToken {
         // アクセストークンを取得する
         let req = async {
             let res = Self::access_token_endpoint(&params, &auth_code, &base64_value);
-            println!("Future作り終えました");
-            let f = res.await;
-            println!("await終わりました");
-            f
+            res.await
         };
-        println!("いまからFutureを実行します");
 
         tokio::runtime::Runtime::new().unwrap().block_on(req)
     }
@@ -43,9 +39,7 @@ impl AuthToken {
             ("redirect_uri", &params.redirect_url),
         ];
 
-        println!("reqwestの初期化開始");
         let client = reqwest::Client::new();
-        println!("reqwestの初期化完了");
         let res: Value = client
             .post(&params.oauth_server)
             .headers(Self::construct_headers(&base64_value))
