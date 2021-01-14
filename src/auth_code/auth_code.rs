@@ -1,5 +1,6 @@
 use crate::params::params::Params;
 use headless_chrome::{Browser, LaunchOptionsBuilder};
+use std::time::Duration;
 
 #[derive(Debug)]
 pub struct AuthCode {
@@ -11,9 +12,12 @@ impl AuthCode {
         let browser = Browser::new(
             LaunchOptionsBuilder::default()
                 .headless(true) // falseにすると、実際にブラウザが起動するようになる
+                .sandbox(false)
+                .idle_browser_timeout(Duration::new(10, 0))
                 .build()
                 .unwrap(),
         )?;
+
         let tab = browser.wait_for_initial_tab()?;
 
         // ref: https://developer.chatwork.com/ja/oauth.html の 例.コンセント画面を表示するためのURL

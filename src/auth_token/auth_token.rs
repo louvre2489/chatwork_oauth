@@ -17,13 +17,9 @@ impl AuthToken {
             let res = Self::access_token_endpoint(&params, &auth_code, &base64_value);
             res.await
         };
+        println!("いまからFutureを実行します");
 
-        let access_token = tokio::runtime::Runtime::new()
-            .unwrap()
-            .block_on(req)
-            .unwrap();
-
-        Ok(access_token)
+        tokio::runtime::Runtime::new().unwrap().block_on(req)
     }
 
     /// tokenエンドポイントへのリクエスト時にAuthorizationヘッダに指定するBase64値を生成する

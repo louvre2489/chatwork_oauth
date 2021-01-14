@@ -1,4 +1,6 @@
 Chatworkの公式ドキュメント （https://developer.chatwork.com/ja/oauth.html） に則って認可トークンを取得する手続きを自動化します
+# dockerを使ってビルドする
+
 # 実行方法
 - 以下のように実行時にパラメーターとして渡すことができます
   - ```
