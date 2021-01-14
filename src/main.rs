@@ -41,8 +41,6 @@ fn main(
         }
     };
 
-    println!("認可コード取得:{:?}", auth_code);
-
     let access_token = match AuthToken::get_oauth_token(&params, &auth_code) {
         Ok(r) => r,
         Err(e) => {
@@ -50,7 +48,7 @@ fn main(
             process::exit(1);
         }
     };
-    println!("アクセストークン取得:{:?}", access_token);
+    println!("認可コード取得完了");
 
     println!("{}", "アクセストークンの取得に成功しました");
     println!("{}", "------------------------------------");
