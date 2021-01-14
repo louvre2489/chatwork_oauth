@@ -15,7 +15,10 @@ impl AuthToken {
         // アクセストークンを取得する
         let req = async {
             let res = Self::access_token_endpoint(&params, &auth_code, &base64_value);
-            res.await
+            println!("Future作り終えました");
+            let f = res.await;
+            println!("await終わりました");
+            f
         };
         println!("いまからFutureを実行します");
 
@@ -33,6 +36,7 @@ impl AuthToken {
         auth_code: &AuthCode,
         base64_value: &str,
     ) -> Result<String> {
+        println!("今からトークン取得していきます");
         let code = &auth_code.code;
         let req_body = [
             ("grant_type", "authorization_code"),
@@ -41,6 +45,7 @@ impl AuthToken {
         ];
 
         let client = reqwest::Client::new();
+        println!("今からHTTP通信します");
         let res: Value = client
             .post(&params.oauth_server)
             .headers(Self::construct_headers(&base64_value))
@@ -51,8 +56,10 @@ impl AuthToken {
             .json()
             .await
             .unwrap();
+        println!("HTTP通信終わりました");
 
         let access_token = &res["access_token"].as_str().unwrap();
+        println!("トークン取得できました");
 
         Ok(access_token.to_string())
     }
