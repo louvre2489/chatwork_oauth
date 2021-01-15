@@ -45,15 +45,14 @@ impl AuthToken {
             .headers(Self::construct_headers(&base64_value))
             .form(&req_body)
             .send()
-            .await
-            .unwrap()
+            .await?
             .json()
-            .await
-            .unwrap();
+            .await?;
 
-        let access_token = &res["access_token"].as_str().unwrap();
-
-        Ok(access_token.to_string())
+        match &res["access_token"].as_str() {
+            Some(access_token) => Ok(access_token.to_string()),
+            None => panic!("トークン取得に失敗しました"),
+        }
     }
 
     fn construct_headers(base64_value: &str) -> HeaderMap {
