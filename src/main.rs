@@ -6,6 +6,8 @@ use chatwork_oauth::params::params::Params;
 use std::process;
 
 /// 参考：https://developer.chatwork.com/ja/oauth.html
+/// Dockerで実行する場合は実行時オプションを使用しない
+/// シングルバイナリを作成して実行するようにすれば実行時オプションを使用できるので、一応消さずにおいておく
 #[cmd]
 fn main(
     #[opt(short = "i", long = "id")] id: Option<String>,
