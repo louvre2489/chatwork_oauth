@@ -44,15 +44,9 @@ fn main(
         }
     };
 
-    let access_token = AuthToken::get_oauth_token(&params, &auth_code)?;
+    let result = AuthToken::get_oauth_token(&params, &auth_code)?;
 
-    println!("{}", "アクセストークンの取得に成功しました");
-    println!("{}", "------------------------------------");
-    println!("{}", access_token);
-
-    // TODO クリップボードに貼り付ける
-
-    // TODO リフレッシュトークンの取得
+    println!("{}", result.access_token);
 
     Ok(())
 }

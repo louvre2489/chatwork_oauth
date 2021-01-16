@@ -5,10 +5,13 @@ use reqwest::header::{HeaderMap, HeaderValue};
 use serde_json::Value;
 use tokio;
 
-pub struct AuthToken {}
+pub struct AuthToken {
+    pub access_token: String,
+    pub refresh_token: String,
+}
 
 impl AuthToken {
-    pub fn get_oauth_token(params: &Params, auth_code: &AuthCode) -> Result<String> {
+    pub fn get_oauth_token(params: &Params, auth_code: &AuthCode) -> Result<Self> {
         // OAuthクライアントの情報をBase64エンコーディング
         let base64_value = Self::get_base64_value(&params.client, &params.secret);
 
@@ -31,7 +34,7 @@ impl AuthToken {
         params: &Params,
         auth_code: &AuthCode,
         base64_value: &str,
-    ) -> Result<String> {
+    ) -> Result<Self> {
         let code = &auth_code.code;
         let req_body = [
             ("grant_type", "authorization_code"),
@@ -49,9 +52,15 @@ impl AuthToken {
             .json()
             .await?;
 
-        match &res["access_token"].as_str() {
-            Some(access_token) => Ok(access_token.to_string()),
-            None => panic!("トークン取得に失敗しました"),
+        match (
+            &res["access_token"].as_str(),
+            &res["refresh_token"].as_str(),
+        ) {
+            (Some(access_token), Some(refresh_token)) => Ok(Self {
+                access_token: access_token.to_string(),
+                refresh_token: refresh_token.to_string(),
+            }),
+            _ => panic!("トークン取得に失敗しました"),
         }
     }
 
